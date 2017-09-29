@@ -1,16 +1,14 @@
-const meta = require('../router/meta.json')
-
 export default {
   watch: {
     '$route' () {
       this.setMeta()
     }
   },
-  
+
   created () {
     if (process.env.VUE_ENV === 'client') return
 
-    const metaData = meta[this.$route.path] || {}
+    const metaData = this.$route.matched[0].meta || {}
 
     this.$ssrContext.title = metaData.title
     this.$ssrContext.description = metaData.description
@@ -25,7 +23,7 @@ export default {
     setMeta () {
       if (typeof document === 'undefined') return
 
-      const metaData = meta[this.$route.path] || {}
+      const metaData = this.$route.matched[0].meta || {}
 
       document.title = metaData.title
       document.querySelector('meta[name="description"]').setAttribute('content', metaData.description)
